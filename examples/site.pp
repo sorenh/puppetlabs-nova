@@ -1,7 +1,11 @@
 $db_host     = 'db'
-$db_username = 'nova'
-$db_name     = 'nova'
-$db_password = 'password'
+$db_nova_username = 'nova'
+$db_nova_name     = 'nova'
+$db_nova_password = 'password'
+
+$db_glance_username = 'glance'
+$db_glance_name     = 'glance'
+$db_glance_password = 'password'
 
 $rabbit_user     = 'nova'
 $rabbit_password = 'nova'
@@ -34,23 +38,31 @@ node db {
                      #'etc_root_password' => true
                    }
   }
-  class { 'mysql::ruby': }
+  class { 'mysql::python': }
   class { 'nova::db':
-    password      => $db_password,
-    dbname        => $db_name,
-    user          => $db_username,
+    password      => $db_nova_password,
+    dbname        => $db_nova_name,
+    user          => $db_nova_username,
     host          => $clientcert,
     # does glance need access?
     allowed_hosts => ['controller', 'glance', 'compute'],
+  }
+
+  class { 'glance::db':
+    password      => $db_glance_password,
+    dbname        => $db_glance_name,
+    user          => $db_glance_username,
+    host          => $clientcert, 
+    allowed_hosts => '%',
   }
 }
 
 node controller {
   class { 'nova::controller':
-    db_password => $db_password,
-    db_name => $db_name,
-    db_user => $db_username,
-    db_host => $db_host,
+    db_password => $db_nova_password,
+    db_name     => $db_nova_name,
+    db_user     => $db_nova_username,
+    db_host     => $db_host,
 
     rabbit_password => $rabbit_password,
     rabbit_port => $rabbit_port,
@@ -83,7 +95,7 @@ node compute {
   }
   class { "nova":
     verbose             => $verbose,
-    sql_connection      => "mysql://${db_username}:${db_password}@${db_host}/${db_name}",
+    sql_connection      => "mysql://${db_nova_username}:${db_nova_password}@${db_host}/${db_nova_name}",
     image_service       => 'nova.image.glance.GlanceImageService',
     glance_api_servers  => $glance_api_servers,
     glance_host         => $glance_host,
