@@ -21,8 +21,14 @@ class nova::api(
     service_name => $::nova::params::api_service_name,
   }
 
+  exec { "nova-api-restart":
+    command => "/usr/sbin/service nova-api restart",
+    refreshonly => true
+  }
+
   file { "/etc/nova/api-paste.ini":
     content => template("nova/api-paste.ini.erb"),
-    require => Class[nova]
+    require => Class[nova],
+    notify => Exec["nova-api-restart"]
   }
 }
