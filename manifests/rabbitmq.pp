@@ -45,4 +45,7 @@ class nova::rabbitmq(
     provider => 'rabbitmqctl',
     require => Class['rabbitmq::server'],
   }
+  @@nova_config { "rabbit_host":
+	value => "${fqdn}"
+  }
 }

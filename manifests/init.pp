@@ -10,7 +10,6 @@ class nova(
   $glance_host = 'localhost',
   $glance_port = '9292',
   $allow_admin_api = false,
-  $rabbit_host = 'localhost',
   $rabbit_password='guest',
   $rabbit_port='5672',
   $rabbit_userid='guest',
@@ -128,7 +127,6 @@ class nova(
     'logdir': value => $logdir;
     'image_service': value => $image_service;
     'allow_admin_api': value => $allow_admin_api;
-    'rabbit_host': value => $rabbit_host;
     'rabbit_password': value => $rabbit_password;
     'rabbit_port': value => $rabbit_port;
     'rabbit_userid': value => $rabbit_userid;
